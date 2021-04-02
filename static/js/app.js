@@ -1,18 +1,6 @@
 // Create variables for data needed
 
 
-
-// function init() {
-
-//     let jsonData = d3.json("data/samples.json").then(data => {
-//         console.log(data);
-    
-//         let idSelect = d3.select("#selDataset");
-    
-//         jsonData.names.forEach(element => {
-//             idSelect.append("option").attr("value", element).text(element);
-//         })
-//     })
 //     // let id = d3.event.target.value
 //     // let sample = data.samples.filter(sample => sample.id === id);
 //     // let sampleOtuId = sample.otu_ids;
@@ -26,26 +14,6 @@
 
 
 //     // Plotly.newPlot("bar", data)
-//     console.log(id)
-
-
-//     // var data = [{
-//     //   values: us,
-//     //   labels: labels,
-//     //   type: "pie"
-//     // }];
-  
-//     // var layout = {
-//     //   height: 600,
-//     //   width: 800
-//     // };
-  
-//     // Plotly.newPlot("pie", data, layout);
-//   }
-//   let idSelect = d3.select("#selDataset");
-//   let id = idSelect
-// //   let SampleOtuId = data.samples.otu_ids;
-//   console.log(id)
 
 // updateDashboard = (data) => {
 //     let id = d3.event.target.value;
@@ -54,22 +22,73 @@
 //     let valuesSample = sample.sample_values;
 // }
 function init(){
-    let data = d3.json("data/samples.json").then(data => {
-        console.log(data);
+    let subjectData = d3.json("data/samples.json").then(data => {
     
-
         let idSelect = d3.select("#selDataset");
         
         data.names.forEach(element => {
             idSelect.append("option").attr("value", element).text(element);
         })
 
-        // idSelect.on("change", () => updateDashboard(data));
+        let subjectID = "940"
 
-        // console.log(id);
-        // console.log(sample);
+        let sample = data.samples.filter(sample => sample["id"] === subjectID);
+        let sortSample = sample.sort(function compare(first,second){
+            return second - first;
+        })
+       
+        let sampleotuIds = sortSample.map(otu => otu.otu_ids);
+        let sampleValues = sortSample.map(val => val.sample_f);
+        let otuLabels = sortSample.map(lab => lab.otu_labels);
+
+        Ids = sampleotuIds[0].slice(0,10)
+        sampleValues = sampleValues[0].slice(0,10);
+        otuLabels = otuLabels[0].slice(0,10);
+        otuIds =[]
+        Ids.forEach(val => {
+            otuIds.push(`OTU ${val}`)
+        });
+
+        console.log(sampleValues)
+        console.log(otuIds)
+        console.log(otuLabels)
+       
+        let barTrace = {
+            type: "bar",
+            y: otuIds,
+            x: sampleValues,
+            orientation: 'h',
+            text: otuLabels
+        }
+
+        let barData = [barTrace];
+
+        let barLayout = {
+            title: "Top 10 OTU'S",
+            yaxis: {
+                showticklabels: true,
+                
+            }
+
+        }
+
+
+        
+        
+        Plotly.newPlot("bar", barData, barLayout);
         // console.log(xBubble)
         // console.lob(yBubble)
+        console.log(barData)
+
+        var testdata = [{
+            type: 'bar',
+            x: [20, 14, 23],
+            y: ['giraffes', 'orangutans', 'monkeys'],
+            orientation: 'h'
+          }];
+        
+        //   Plotly.newPlot ("bar", testdata)
+
     })
 };
 // Use `sample_values` as the values for the bar chart.
