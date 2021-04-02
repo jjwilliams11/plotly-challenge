@@ -21,6 +21,51 @@
 //     let otusSample = sample.otu_ids;
 //     let valuesSample = sample.sample_values;
 // }
+
+function barChart(otuIds, sampleValues, otuLabels){
+
+    // Establesh Bar Chart Data
+    let barTrace = {
+        type: "bar",
+        y: otuIds,
+        x: sampleValues,
+        orientation: 'h',
+        text: otuLabels
+    }
+
+    // Store Bar Chart Data into an Array
+    let barData = [barTrace];
+
+    // Setup Bar Chart Layout
+    let barLayout = {
+        title: "Top 10 OTU'S",
+        yaxis: {
+            showticklabels: true,
+        }
+
+    }
+
+    // Print Bar Chart
+    Plotly.newPlot("bar", barData, barLayout);
+    console.log(barData)
+
+}
+
+
+let colors = []
+function randomColor(Ids){
+    
+
+    Ids.forEach(i => {
+    let r = Math.floor(Math.random() * (255 - 0 + 1) + 0);
+    let g = Math.floor(Math.random() * (255 - 0 + 1) + 0);
+    let b = Math.floor(Math.random() * (255 - 0 + 1) + 0);
+    rgb = 'rgb('+ r + ', ' + g + ', ' + b + ')',
+    colors.push(rgb);
+    })
+}
+console.log(colors)
+
 function init(){
     let subjectData = d3.json("data/samples.json").then(data => {
     
@@ -53,47 +98,29 @@ function init(){
         console.log(otuIds)
         console.log(otuLabels)
        
-        let barTrace = {
-            type: "bar",
-            y: otuIds,
-            x: sampleValues,
-            orientation: 'h',
-            text: otuLabels
-        }
 
-        let barData = [barTrace];
-
-        let barLayout = {
-            title: "Top 10 OTU'S",
-            yaxis: {
-                showticklabels: true,
-                
+        barChart(otuIds, sampleValues, otuLabels);
+        randomColor(Ids)
+        
+        let bubbleTrace = {
+            x: Ids,
+            y: sampleValues,
+            mode: 'markers',
+            text: otuLabels,
+            marker:{
+                color:[randomColor(Ids)],
+                size: sampleValues,
             }
+        };
 
+        let bubbleLayout = {
+            title: "Bubble"
         }
 
+        let bubbleData = [bubbleTrace];
 
-        
-        
-        Plotly.newPlot("bar", barData, barLayout);
-        // console.log(xBubble)
-        // console.lob(yBubble)
-        console.log(barData)
-
-        var testdata = [{
-            type: 'bar',
-            x: [20, 14, 23],
-            y: ['giraffes', 'orangutans', 'monkeys'],
-            orientation: 'h'
-          }];
-        
-        //   Plotly.newPlot ("bar", testdata)
+        Plotly.newPlot('bubble', bubbleData)
 
     })
 };
-// Use `sample_values` as the values for the bar chart.
-
-// * Use `otu_ids` as the labels for the bar chart.
-
-// * Use `otu_labels` as the hovertext for the chart.
 init()
