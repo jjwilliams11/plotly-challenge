@@ -1,30 +1,29 @@
-// Create variables for data needed
+
+function Demographics(subjectDemographics){
 
 
-//     // let id = d3.event.target.value
-//     // let sample = data.samples.filter(sample => sample.id === id);
-//     // let sampleOtuId = sample.otu_ids;
-//     // let sampleValues = sample.sample_values;
+    let idDemographics = d3.select("#sample-metadata");
 
-//     // trace1 = {
-//     //     x: sampleOtuId,
-//     //     y:sampleValues
-//     // };
-//     // data = [trace1]
+    // Loop through object and insert into Demographics Section
+    Object.entries(subjectDemographics).forEach(([key,value]) => {
+       eKey = key.toUpperCase();
+       idDemographics.append("option").text(`${eKey} : ${value}`);
+   })
+}
 
+function barChart(sampleotuIds, sampleValues, otuLabels){
 
-//     // Plotly.newPlot("bar", data)
+    // Setup variable for chart
+    otuIds = sampleotuIds[0].slice(0,10),
+    barValues = sampleValues[0].slice(0,10);
+    barLabels = otuLabels[0].slice(0,10);
+    barIds =[]
+    otuIds.forEach(val => {
+        barIds.push(`OTU ${val}`)
+    });
 
-// updateDashboard = (data) => {
-//     let id = d3.event.target.value;
-//     let sample = data.samples.filter(sample => sample.id === id);
-//     let otusSample = sample.otu_ids;
-//     let valuesSample = sample.sample_values;
-// }
-
-function barChart(barIds, barValues, barLabels){
-
-    
+    // Establish random colors for chart
+    randomColor(barIds)
 
     // Establesh Bar Chart Data
     let barTrace = {
@@ -46,7 +45,15 @@ function barChart(barIds, barValues, barLabels){
 
 }
 
-function bubbleChart(bubbleOtuIds, bubbleValues, bubbleLabels){
+function bubbleChart(sampleotuIds, sampleValues, otuLabels){
+
+    // Setup variable for chart
+    bubbleOtuIds = sampleotuIds[0];
+    bubbleValues = sampleValues[0];
+    bubbleLabels = otuLabels[0];
+
+    // Establish random colors for chart
+    randomColor(bubbleOtuIds)
 
     // Establesh Bubble Chart Data
     let bubbleTrace = {
@@ -71,11 +78,9 @@ function bubbleChart(bubbleOtuIds, bubbleValues, bubbleLabels){
 
 let colors = []
 
-
-function randomColor(){
+function randomColor(arr){
     
-
-    bubbleOtuIds.forEach(i => {
+    arr.forEach(i => {
     let r = Math.floor(Math.random() * (255 - 0 + 1) + 0);
     let g = Math.floor(Math.random() * (255 - 0 + 1) + 0);
     let b = Math.floor(Math.random() * (255 - 0 + 1) + 0);
@@ -83,6 +88,7 @@ function randomColor(){
     colors.push(rgb);
     })
 }
+
 
 // Snippet found at W3docs --- https://www.w3docs.com/snippets/javascript/how-to-sort-javascript-object-by-key.html
 function sortObj(obj) {
@@ -93,60 +99,43 @@ function sortObj(obj) {
   }
 
 
-// optionChanged = (id) => {
-//     let idSelect = d3.select("#selDataset");
-//     console.log(idSelect);
-// }
+optionChanged = () => {
+
+    // Prevent the page from refreshing
+    // d3.event.preventDefault();
+
+    let subjectID = d3.select("#selDataset").property("value");
+    
+    init(subjectID)
+}
 
 
 
 function init(){
     let subjectData = d3.json("data/samples.json").then(data => {
 
+         
         let idSelect = d3.select("#selDataset");
-    
+
+         // Establish Dropdown for Sample ID's
         data.names.forEach(element => {
             idSelect.append("option").attr("value", element).text(element);
         })
 
-        // Set initial Sample ID for charts
-        let subjectID = "940"
+        // Establish Subject ID and Meta ID
+        let subjectID = idSelect.property("value");
+ 
+        let metaID = parseInt(subjectID);
 
-        let idDemographics = d3.select("#sample-metadata")
-
-        let metaID = 940
-
+        // Filter and Sort Metadata
         let filterMeta = data.metadata.filter(meta => meta["id"] === metaID);
 
         let subjectMeta = filterMeta[0];
 
-
         let subjectDemographics = sortObj(subjectMeta);
-        console.log(subjectDemographics);
 
-
-        Object.entries(subjectDemographics).forEach(([key,value]) => {
-                    eKey = key.toUpperCase();
-                    idDemographics.append("option").text(`${eKey}:  ${value}`);
-                })
-
-
-        // idDemographics.append("sample-metadata").text(subjectMeta.id)
-        // idDemographics.append("panel-body").text(subjectMeta.age)
         
-        // filterMeta.forEach(element => {
-        //     // element.sort(function compare(first,second){
-        //     //     return first - second;
-        //     // })
-        //     Object.entries(element).forEach(([key,value]) => {
-        //         eKey = key.toUpperCase()
-        //         idDemographics.append("option").text(`${eKey}:  ${value}`);
-        //     })
-        
-        // })
-
-
-        // Obtain Subject ID sample information and sort in descending order
+        // Filter and Sort sample information and sort in descending order
         let sample = data.samples.filter(sample => sample["id"] === subjectID);
 
         let sortSample = sample.sort(function compare(first,second){
@@ -157,31 +146,17 @@ function init(){
         let sampleotuIds = sortSample.map(otu => otu.otu_ids);
         let sampleValues = sortSample.map(val => val.sample_f);
         let otuLabels = sortSample.map(lab => lab.otu_labels);
-
-
-        otuIds = sampleotuIds[0].slice(0,10),
-        barValues = sampleValues[0].slice(0,10);
-        barLabels = otuLabels[0].slice(0,10);
-        barIds =[]
-        otuIds.forEach(val => {
-            barIds.push(`OTU ${val}`)
-        });
-
-        bubbleOtuIds = sampleotuIds[0];
-        bubbleValues = sampleValues[0];
-        bubbleLabels = otuLabels[0];
+ 
+         
         
-
-
+       // Run Initial Demographics and Charts
+        Demographics(subjectDemographics)
         
-        
-        randomColor(barIds);
-        barChart(barIds, barValues, barLabels);
+        barChart(sampleotuIds, sampleValues, otuLabels)
 
-        randomColor(bubbleOtuIds);
-        bubbleChart(bubbleOtuIds, bubbleValues, bubbleLabels);
-    
-   
+        bubbleChart(sampleotuIds, sampleValues, otuLabels)
+
+        idSelect.on("change", () => optionChanged(idSelect));
 
     })
 };
