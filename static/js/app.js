@@ -24,36 +24,57 @@
 
 function barChart(barIds, barValues, barLabels){
 
+    
+
     // Establesh Bar Chart Data
     let barTrace = {
         type: "bar",
         y: barIds,
         x: barValues,
         orientation: 'h',
-        text: barLabels
+        text: barLabels,
+        marker:{
+            color: colors,
+        }
     }
 
-    // Store Bar Chart Data into an Array
+    
     let barData = [barTrace];
+    
 
-    // Setup Bar Chart Layout
-    // let barLayout = {
-    //     title: "Top 10 OTU'S",
-    //     yaxis: {
-    //         showticklabels: true,
-    //     }
-
-    // }
 
     // Print Bar Chart
     Plotly.newPlot("bar", barData);
-    console.log(barData)
 
 }
 
+function bubbleChart(bubbleOtuIds, bubbleValues, bubbleLabels){
+
+    // Establesh Bubble Chart Data
+    let bubbleTrace = {
+        type: 'scatter',
+        x: bubbleOtuIds,
+        y: bubbleValues,
+        mode: 'markers',
+        text: bubbleLabels,
+        marker:{
+            color: colors,
+            size: bubbleValues,
+        }
+    };
+
+    // Store Bar Chart Data into an Array
+    let bubbleData = [bubbleTrace];
+
+    // Print Bar Chart
+    Plotly.newPlot('bubble', bubbleData)
+
+}
 
 let colors = []
-function randomColor(bubbleOtuIds){
+
+
+function randomColor(){
     
 
     bubbleOtuIds.forEach(i => {
@@ -65,6 +86,7 @@ function randomColor(bubbleOtuIds){
     })
 }
 console.log(colors)
+
 
 
 
@@ -105,32 +127,17 @@ function init(){
         // console.log(bubbleOtuIds)
         // console.log(bubbleLabels)
         // console.log(sampleotuIds)
-       
+        console.log(colors)
 
-        barChart(barIds, barValues, barLabels);
-        // randomColor(Ids)
         
-        let bubbleTrace = {
-            type: 'scatter',
-            x: bubbleOtuIds,
-            y: bubbleValues,
-            mode: 'markers',
-            text: bubbleLabels,
-            marker:{
-                color:randomColor(bubbleOtuIds),
-                size: bubbleValues,
-            }
-        };
+        
+        randomColor(barIds);
+        barChart(barIds, barValues, barLabels);
 
-        let bubbleLayout = {
-            title: "Bubble"
-        }
-
-        let bubbleData = [bubbleTrace];
-
-        Plotly.newPlot('bubble', bubbleData, bubbleLayout)
-
-        console.log(bubbleData)
+        randomColor(bubbleOtuIds);
+        bubbleChart(bubbleOtuIds, bubbleValues, bubbleLabels);
+    
+   
 
     })
 };
