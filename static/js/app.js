@@ -1,3 +1,57 @@
+function init(){
+
+    let idSelect = d3.select("#selDataset");
+    
+    let subjectData = d3.json("data/samples.json").then(data => {
+
+         
+         // Establish Dropdown for Sample ID's
+        data.names.forEach(element => {
+            idSelect.append("option").attr("value", element).text(element);
+        })
+
+        // Establish Subject ID and Meta ID
+        let subjectID = idSelect.property("value");
+ 
+        let metaID = parseInt(subjectID);
+
+        // Filter and Sort Metadata
+        let filterMeta = data.metadata.filter(meta => meta["id"] === metaID);
+
+        let subjectMeta = filterMeta[0];
+
+        let subjectDemographics = sortObj(subjectMeta);
+
+        
+        // Filter and Sort sample information and sort in descending order
+        let sample = data.samples.filter(sample => sample["id"] === subjectID);
+
+        let sortSample = sample.sort(function compare(first,second){
+            return second - first;
+        })
+       
+        // Estable sample variable to use with charts
+        let sampleotuIds = sortSample.map(otu => otu.otu_ids);
+        let sampleValues = sortSample.map(val => val.sample_values);
+        let otuLabels = sortSample.map(lab => lab.otu_labels);
+ 
+
+        console.log(sample)
+         
+        d3.select("#sample-metadata").text("");
+        
+       // Run Initial Demographics and Charts
+        Demographics(subjectDemographics)
+        
+        barChart(sampleotuIds, sampleValues, otuLabels)
+
+        bubbleChart(sampleotuIds, sampleValues, otuLabels)
+
+        idSelect.on("change", () => optionChanged(idSelect));
+
+    })
+};
+
 
 function Demographics(subjectDemographics){
 
@@ -10,6 +64,7 @@ function Demographics(subjectDemographics){
        idDemographics.append("option").text(`${eKey} : ${value}`);
    })
 }
+
 
 function barChart(sampleotuIds, sampleValues, otuLabels){
 
@@ -44,6 +99,7 @@ function barChart(sampleotuIds, sampleValues, otuLabels){
     Plotly.newPlot("bar", barData);
 
 }
+
 
 function bubbleChart(sampleotuIds, sampleValues, otuLabels){
 
@@ -101,63 +157,11 @@ function sortObj(obj) {
 
 optionChanged = () => {
 
-    // Prevent the page from refreshing
-    // d3.event.preventDefault();
-
     let subjectID = d3.select("#selDataset").property("value");
-    
     init(subjectID)
 }
 
 
 
-function init(){
-    let subjectData = d3.json("data/samples.json").then(data => {
 
-         
-        let idSelect = d3.select("#selDataset");
-
-         // Establish Dropdown for Sample ID's
-        data.names.forEach(element => {
-            idSelect.append("option").attr("value", element).text(element);
-        })
-
-        // Establish Subject ID and Meta ID
-        let subjectID = idSelect.property("value");
- 
-        let metaID = parseInt(subjectID);
-
-        // Filter and Sort Metadata
-        let filterMeta = data.metadata.filter(meta => meta["id"] === metaID);
-
-        let subjectMeta = filterMeta[0];
-
-        let subjectDemographics = sortObj(subjectMeta);
-
-        
-        // Filter and Sort sample information and sort in descending order
-        let sample = data.samples.filter(sample => sample["id"] === subjectID);
-
-        let sortSample = sample.sort(function compare(first,second){
-            return second - first;
-        })
-       
-        // Estable sample variable to use with charts
-        let sampleotuIds = sortSample.map(otu => otu.otu_ids);
-        let sampleValues = sortSample.map(val => val.sample_f);
-        let otuLabels = sortSample.map(lab => lab.otu_labels);
- 
-         
-        
-       // Run Initial Demographics and Charts
-        Demographics(subjectDemographics)
-        
-        barChart(sampleotuIds, sampleValues, otuLabels)
-
-        bubbleChart(sampleotuIds, sampleValues, otuLabels)
-
-        idSelect.on("change", () => optionChanged(idSelect));
-
-    })
-};
 init()
