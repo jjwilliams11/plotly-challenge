@@ -35,8 +35,11 @@ function init(){
         let sampleValues = sortSample.map(val => val.sample_values);
         let otuLabels = sortSample.map(lab => lab.otu_labels);
  
+        
 
-        console.log(sample)
+
+
+
          
         d3.select("#sample-metadata").text("");
         
@@ -46,6 +49,8 @@ function init(){
         barChart(sampleotuIds, sampleValues, otuLabels)
 
         bubbleChart(sampleotuIds, sampleValues, otuLabels)
+
+        gaugeChart(subjectDemographics)
 
         idSelect.on("change", () => optionChanged(idSelect));
 
@@ -130,6 +135,39 @@ function bubbleChart(sampleotuIds, sampleValues, otuLabels){
     // Print Bubble Chart
     Plotly.newPlot('bubble', bubbleData)
 
+}
+
+function gaugeChart(subjectDemographics){
+
+    let washFreq =subjectDemographics.wfreq
+
+    let gaugeTrace = {
+        type: "indicator",
+        mode: "gauge+number+delta",
+        value: washFreq,
+        title: { text: "Wash Frequency", font: { size: 20 } },
+        gauge: {
+            axis: {range: [null, 9], tickwidth: .5, tickcolor: "darkblue"},
+            bar: {color: "gold"},
+            steps: [
+                {range: [0,1], color: "aliceblue"},
+                {range: [1,2], color: "lightskyblue"},
+                {range: [2,3], color: "skyblue"},
+                {range: [3,4], color: "deepskyblue"},
+                {range: [4,5], color: "dodgerblue"},
+                {range: [5,6], color: "blue"},
+                {range: [6,7], color: "mediumblue"},
+                {range: [7,8], color: "darkblue"},
+                {range: [8,9], color: "midnightblue"}
+                
+            ]
+        }
+    }
+
+    let gaugeData = [gaugeTrace]
+  
+      
+      Plotly.newPlot('gauge', gaugeData);
 }
 
 let colors = []
