@@ -22,41 +22,41 @@
 //     let valuesSample = sample.sample_values;
 // }
 
-function barChart(otuIds, sampleValues, otuLabels){
+function barChart(barIds, barValues, barLabels){
 
     // Establesh Bar Chart Data
     let barTrace = {
         type: "bar",
-        y: otuIds,
-        x: sampleValues,
+        y: barIds,
+        x: barValues,
         orientation: 'h',
-        text: otuLabels
+        text: barLabels
     }
 
     // Store Bar Chart Data into an Array
     let barData = [barTrace];
 
     // Setup Bar Chart Layout
-    let barLayout = {
-        title: "Top 10 OTU'S",
-        yaxis: {
-            showticklabels: true,
-        }
+    // let barLayout = {
+    //     title: "Top 10 OTU'S",
+    //     yaxis: {
+    //         showticklabels: true,
+    //     }
 
-    }
+    // }
 
     // Print Bar Chart
-    Plotly.newPlot("bar", barData, barLayout);
+    Plotly.newPlot("bar", barData);
     console.log(barData)
 
 }
 
 
 let colors = []
-function randomColor(Ids){
+function randomColor(bubbleOtuIds){
     
 
-    Ids.forEach(i => {
+    bubbleOtuIds.forEach(i => {
     let r = Math.floor(Math.random() * (255 - 0 + 1) + 0);
     let g = Math.floor(Math.random() * (255 - 0 + 1) + 0);
     let b = Math.floor(Math.random() * (255 - 0 + 1) + 0);
@@ -65,6 +65,8 @@ function randomColor(Ids){
     })
 }
 console.log(colors)
+
+
 
 function init(){
     let subjectData = d3.json("data/samples.json").then(data => {
@@ -86,30 +88,37 @@ function init(){
         let sampleValues = sortSample.map(val => val.sample_f);
         let otuLabels = sortSample.map(lab => lab.otu_labels);
 
-        Ids = sampleotuIds[0].slice(0,10)
-        sampleValues = sampleValues[0].slice(0,10);
-        otuLabels = otuLabels[0].slice(0,10);
-        otuIds =[]
-        Ids.forEach(val => {
-            otuIds.push(`OTU ${val}`)
+
+        otuIds = sampleotuIds[0].slice(0,10),
+        barValues = sampleValues[0].slice(0,10);
+        barLabels = otuLabels[0].slice(0,10);
+        barIds =[]
+        otuIds.forEach(val => {
+            barIds.push(`OTU ${val}`)
         });
 
-        console.log(sampleValues)
-        console.log(otuIds)
-        console.log(otuLabels)
+        bubbleOtuIds = sampleotuIds[0];
+        bubbleValues = sampleValues[0];
+        bubbleLabels = otuLabels[0];
+        
+        // console.log(bubbleValues)
+        // console.log(bubbleOtuIds)
+        // console.log(bubbleLabels)
+        // console.log(sampleotuIds)
        
 
-        barChart(otuIds, sampleValues, otuLabels);
-        randomColor(Ids)
+        barChart(barIds, barValues, barLabels);
+        // randomColor(Ids)
         
         let bubbleTrace = {
-            x: Ids,
-            y: sampleValues,
+            type: 'scatter',
+            x: bubbleOtuIds,
+            y: bubbleValues,
             mode: 'markers',
-            text: otuLabels,
+            text: bubbleLabels,
             marker:{
-                color:[randomColor(Ids)],
-                size: sampleValues,
+                color:randomColor(bubbleOtuIds),
+                size: bubbleValues,
             }
         };
 
@@ -119,7 +128,9 @@ function init(){
 
         let bubbleData = [bubbleTrace];
 
-        Plotly.newPlot('bubble', bubbleData)
+        Plotly.newPlot('bubble', bubbleData, bubbleLayout)
+
+        console.log(bubbleData)
 
     })
 };
