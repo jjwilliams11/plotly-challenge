@@ -38,11 +38,9 @@ function barChart(barIds, barValues, barLabels){
         }
     }
 
-    
+    // Store Bar Chart Data into an Array
     let barData = [barTrace];
     
-
-
     // Print Bar Chart
     Plotly.newPlot("bar", barData);
 
@@ -63,10 +61,10 @@ function bubbleChart(bubbleOtuIds, bubbleValues, bubbleLabels){
         }
     };
 
-    // Store Bar Chart Data into an Array
+    // Store Bubble Chart Data into an Array
     let bubbleData = [bubbleTrace];
 
-    // Print Bar Chart
+    // Print Bubble Chart
     Plotly.newPlot('bubble', bubbleData)
 
 }
@@ -85,8 +83,6 @@ function randomColor(){
     colors.push(rgb);
     })
 }
-console.log(colors)
-
 
 
 
@@ -99,13 +95,21 @@ function init(){
             idSelect.append("option").attr("value", element).text(element);
         })
 
+        // Set initial Sample ID for charts
         let subjectID = "940"
 
+        let metaID = 940
+
+        let subjectMeta = data.metadata.filter(meta => meta["id"] === metaID);
+
+        // Obtain Subject ID sample information and sort in descending order
         let sample = data.samples.filter(sample => sample["id"] === subjectID);
+
         let sortSample = sample.sort(function compare(first,second){
             return second - first;
         })
        
+        // Estable sample variable to use with charts
         let sampleotuIds = sortSample.map(otu => otu.otu_ids);
         let sampleValues = sortSample.map(val => val.sample_f);
         let otuLabels = sortSample.map(lab => lab.otu_labels);
@@ -127,7 +131,7 @@ function init(){
         // console.log(bubbleOtuIds)
         // console.log(bubbleLabels)
         // console.log(sampleotuIds)
-        console.log(colors)
+        console.log(subjectMeta)
 
         
         
