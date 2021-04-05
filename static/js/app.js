@@ -84,13 +84,27 @@ function randomColor(){
     })
 }
 
+// Snippet found at W3docs --- https://www.w3docs.com/snippets/javascript/how-to-sort-javascript-object-by-key.html
+function sortObj(obj) {
+    return Object.keys(obj).sort().reduce(function (result, key) {
+      result[key] = obj[key];
+      return result;
+    }, {});
+  }
+
+
+// optionChanged = (id) => {
+//     let idSelect = d3.select("#selDataset");
+//     console.log(idSelect);
+// }
+
 
 
 function init(){
     let subjectData = d3.json("data/samples.json").then(data => {
-    
+
         let idSelect = d3.select("#selDataset");
-        
+    
         data.names.forEach(element => {
             idSelect.append("option").attr("value", element).text(element);
         })
@@ -98,9 +112,39 @@ function init(){
         // Set initial Sample ID for charts
         let subjectID = "940"
 
+        let idDemographics = d3.select("#sample-metadata")
+
         let metaID = 940
 
-        let subjectMeta = data.metadata.filter(meta => meta["id"] === metaID);
+        let filterMeta = data.metadata.filter(meta => meta["id"] === metaID);
+
+        let subjectMeta = filterMeta[0];
+
+
+        let subjectDemographics = sortObj(subjectMeta);
+        console.log(subjectDemographics);
+
+
+        Object.entries(subjectDemographics).forEach(([key,value]) => {
+                    eKey = key.toUpperCase();
+                    idDemographics.append("option").text(`${eKey}:  ${value}`);
+                })
+
+
+        // idDemographics.append("sample-metadata").text(subjectMeta.id)
+        // idDemographics.append("panel-body").text(subjectMeta.age)
+        
+        // filterMeta.forEach(element => {
+        //     // element.sort(function compare(first,second){
+        //     //     return first - second;
+        //     // })
+        //     Object.entries(element).forEach(([key,value]) => {
+        //         eKey = key.toUpperCase()
+        //         idDemographics.append("option").text(`${eKey}:  ${value}`);
+        //     })
+        
+        // })
+
 
         // Obtain Subject ID sample information and sort in descending order
         let sample = data.samples.filter(sample => sample["id"] === subjectID);
@@ -127,11 +171,7 @@ function init(){
         bubbleValues = sampleValues[0];
         bubbleLabels = otuLabels[0];
         
-        // console.log(bubbleValues)
-        // console.log(bubbleOtuIds)
-        // console.log(bubbleLabels)
-        // console.log(sampleotuIds)
-        console.log(subjectMeta)
+
 
         
         
