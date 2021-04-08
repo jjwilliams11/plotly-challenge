@@ -202,9 +202,9 @@ let colors = []
 function randomColor(arr){
     
     arr.forEach(i => {
-    let r = Math.floor(Math.random() * (255 - 0 + 1) + 0);
-    let g = Math.floor(Math.random() * (255 - 0 + 1) + 0);
-    let b = Math.floor(Math.random() * (255 - 0 + 1) + 0);
+    let r = Math.floor(Math.random() * (255 - 0 + 1) + 40);
+    let g = Math.floor(Math.random() * (255 - 0 + 1) + 40);
+    let b = Math.floor(Math.random() * (255 - 0 + 1) + 40);
     rgb = 'rgb('+ r + ', ' + g + ', ' + b + ')',
     colors.push(rgb);
     })
