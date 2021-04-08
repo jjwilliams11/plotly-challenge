@@ -21,7 +21,7 @@ function init(){
         let subjectMeta = filterMeta[0];
 
         let subjectDemographics = sortObj(subjectMeta);
-
+        console.log(filterMeta)
         
         // Filter and Sort sample information and sort in descending order
         let sample = data.samples.filter(sample => sample["id"] === subjectID);
@@ -74,9 +74,9 @@ function Demographics(subjectDemographics){
 function barChart(sampleotuIds, sampleValues, otuLabels){
 
     // Setup variable for chart
-    otuIds = sampleotuIds[0].slice(0,10),
-    barValues = sampleValues[0].slice(0,10);
-    barLabels = otuLabels[0].slice(0,10);
+    otuIds = sampleotuIds[0].slice(0,10).reverse(),
+    barValues = sampleValues[0].slice(0,10).reverse();
+    barLabels = otuLabels[0].slice(0,10).reverse();
     barIds =[]
     otuIds.forEach(val => {
         barIds.push(`OTU ${val}`)
@@ -145,7 +145,7 @@ function gaugeChart(subjectDemographics){
         type: "indicator",
         mode: "gauge+number+delta",
         value: washFreq,
-        title: { text: "Wash Frequency", font: { size: 20 } },
+        // title: { text: "Wash Frequency", font: { size: 20 } },
         gauge: {
             axis: {range: [null, 9], tickwidth: .5, tickcolor: "darkblue"},
             bar: {color: "gold"},
@@ -165,9 +165,16 @@ function gaugeChart(subjectDemographics){
     }
 
     let gaugeData = [gaugeTrace]
+
+    let gaugeLayout = {
+        margin: {
+            t: 0
+        }
+
+    }
   
       
-      Plotly.newPlot('gauge', gaugeData);
+      Plotly.newPlot('gauge', gaugeData, gaugeLayout);
 }
 
 let colors = []
