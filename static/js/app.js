@@ -97,11 +97,21 @@ function barChart(sampleotuIds, sampleValues, otuLabels){
         }
     }
 
+    let barLayout = {
+        margin: {
+          l: 100,
+          r: 50,
+          b: 100,
+          t: 0,
+          pad: 4
+        }
+      };
+
     // Store Bar Chart Data into an Array
     let barData = [barTrace];
     
     // Print Bar Chart
-    Plotly.newPlot("bar", barData);
+    Plotly.newPlot("bar", barData, barLayout, {displayModeBar: false});
 
 }
 
@@ -132,8 +142,18 @@ function bubbleChart(sampleotuIds, sampleValues, otuLabels){
     // Store Bubble Chart Data into an Array
     let bubbleData = [bubbleTrace];
 
+    let bubbleLayout = {
+        margin: {
+          l: 25,
+          r: 25,
+          b: 25,
+          t: 25,
+          pad: 4
+        }
+      };
+
     // Print Bubble Chart
-    Plotly.newPlot('bubble', bubbleData)
+    Plotly.newPlot('bubble', bubbleData, bubbleLayout, {displayModeBar: false})
 
 }
 
@@ -145,7 +165,7 @@ function gaugeChart(subjectDemographics){
         type: "indicator",
         mode: "gauge+number+delta",
         value: washFreq,
-        // title: { text: "Wash Frequency", font: { size: 20 } },
+        title: { text: "Belly Button Wash Frequency", font: { size: 20 } },
         gauge: {
             axis: {range: [null, 9], tickwidth: .5, tickcolor: "darkblue"},
             bar: {color: "gold"},
@@ -167,14 +187,14 @@ function gaugeChart(subjectDemographics){
     let gaugeData = [gaugeTrace]
 
     let gaugeLayout = {
-        margin: {
-            t: 0
-        }
-
+        margin: { t: 0, 
+                r: 25, 
+                l: 25, 
+                b: 0 }
     }
   
       
-      Plotly.newPlot('gauge', gaugeData, gaugeLayout);
+      Plotly.newPlot('gauge', gaugeData, gaugeLayout, {displayModeBar: false});
 }
 
 let colors = []
